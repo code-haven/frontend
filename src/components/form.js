@@ -15,31 +15,29 @@ export default class PlotSizeInputForm extends React.Component {
 	constructor () {
 		super();
 		this.state =  {
-			length: '', 
-			breadth: '', 
+			area: '',
+			model: '',
 			region: 'Karnataka'
 		};
 	}
 
-	handleLengthChange(e) {
-		this.setState({length: parseInt(e.target.value)})
-	}
-
-	handleBreadthChange(e) {
-		this.setState({breadth: parseInt(e.target.value)})
+	handleAreaChange(e) {
+		this.setState({area: parseInt(e.target.value)})
 	}
 
 	handleRegionChange(e) {
 		this.setState({region: e.target.value})
 	}
 
+	handleModelChange(e) {
+		this.setState({model: e.target.value})
+	}
 
 	calculateArea(e) {
 		e.preventDefault();
 
-		this.props.globalData.length = this.state.length;
-		this.props.globalData.breadth = this.state.breadth;
-		this.props.globalData.area = this.state.length * this.state.breadth;
+
+		this.props.globalData.area = this.state.area;
 
 		const params = {
 			'length': this.props.globalData.length,
@@ -64,11 +62,8 @@ export default class PlotSizeInputForm extends React.Component {
 		return (
 			<Panel id="formPanel">
 			  <ProgressBar step={1} step_name={"Inputs"} />
-			  <Form onSubmit={this.calculateArea.bind(this)}>
-		          <legend>Calculate Maximizing Large</legend>
-		          <Input label="Length of the Plot" value={this.state.length} onChange={this.handleLengthChange.bind(this)} hint="Enter value in meters" required={true}/>
-		          <Input label="Breadth of the Plot" value={this.state.breadth} onChange={this.handleBreadthChange.bind(this)} hint="Enter value in meters" required={true}/>  
-		        <Select label="Select a region" value={this.state.region} required={true} onChange={this.handleRegionChange.bind(this)}>
+			  <Form className="inputForm" onSubmit={this.calculateArea.bind(this)}>
+		          <Select label="Select a State" value={this.state.region} required={true} onChange={this.handleRegionChange.bind(this)}>
 					<Option value="Andaman and Nicobar Islands" defaultValue="Karnataka" label="Andaman and Nicobar Islands"/>
 					<Option value="Andhra Pradesh" label="Andhra Pradesh"/>
 					<Option value="Arunachal Pradesh" label="Arunachal Pradesh"/>
@@ -105,6 +100,11 @@ export default class PlotSizeInputForm extends React.Component {
 					<Option value="Uttar Pradesh" label="Uttar Pradesh"/>
 					<Option value="West Bengal" label="West Bengal"/>
 				   </Select>
+				   <Input label="Land Area (in Acres)"  value={this.state.area} onChange={this.handleAreaChange.bind(this)} hint="Enter Land Area > 5 Acres" required={true}/>
+		          <Select label="Select the operating model" value={this.state.model} required={true} onChange={this.handleModelChange.bind(this)}>
+				  	<Option value="PMAY" label="PMAY"/>
+					<Option value="State" label="State"/>
+				  </Select>
 	          	<Button variant="raised">Next</Button>
 	        </Form>
 	      </Panel>  

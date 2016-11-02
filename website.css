@@ -93,7 +93,7 @@ select {
     -webkit-user-select: none;
 }
 
-form {
+.inputForm {
 	width: 500px;
 	margin: 0 auto;
 	padding: 50px 0 !important;
@@ -109,12 +109,12 @@ form {
 }
 
 #app {
-    margin-top: 5   0px;
+    margin: 25px;
 }
 
 #formPanel {
     width: 600px;
-    margin: 0 auto;
+    margin: 100px auto;
 }
 
 #back {
@@ -122,5 +122,24 @@ form {
 }
 
 p {
+    padding: 25px;
+}
+
+.mui-tabs__bar.mui-tabs__bar--justified>li>a {
+    font-size: 14px;
+    background: #d70073;
+	color: #f5f5f5;
+}
+
+td, th {
+    padding: 15px;
+}
+
+.spatial, .final {
+    width: 800px;
+    margin: 0 auto;
+}
+
+.planning, .mandatory, .final, .incentive {
     padding: 25px;
 }

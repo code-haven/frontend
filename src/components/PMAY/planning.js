@@ -113,11 +113,11 @@ export default class PlanningParameters extends React.Component {
 						</tr>
 						<tr>
                 	        <td>Ground Coverage (35%) </td>
-							<td>{this.state.ground_coverage} acres</td>
+							<td>{this.state.ground_coverage.toFixed(2)} acres</td>
 						</tr>
 						<tr>
                 	        <td>Civic Amenities (3%) </td>
-							<td>{ 0.03 * this.state.ground_coverage} acres</td>
+							<td>{ (0.03 * this.state.ground_coverage).toFixed(2)} acres</td>
 						</tr>
 						<tr>
                 	        <td>Approach Road </td>
@@ -134,11 +134,11 @@ export default class PlanningParameters extends React.Component {
                                 <tbody>
                                     <tr>
                                     <td>Standard FAR (1.33)</td>
-                                    <td>{1.33 * this.state.ground_coverage} acres</td>
+                                    <td>{(1.33 * this.state.ground_coverage).toFixed(2)} acres</td>
                                     </tr>
                                     <tr>
                                     <td>Maximum FAR (2.25) </td>
-                                    <td>{2.25 * this.state.ground_coverage} acres</td>
+                                    <td>{(2.25 * this.state.ground_coverage).toFixed(2)} acres</td>
                                     </tr>
                                 </tbody>
                             </table></td>

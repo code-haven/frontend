@@ -143,3 +143,32 @@ td, th {
 .planning, .mandatory, .final, .incentive {
     padding: 25px;
 }
+
+.mui-tabs__bar>li.mui--is-active {
+    border-bottom: 3px solid #ffc107;
+}
+
+.mui-select:focus > select {
+  height: 33px;
+  margin-bottom: -1px;
+  border-color:  #ffc107;
+  border-width: 2px;
+}
+
+.mui-select:focus > label,
+.mui-select > select:focus ~ label {
+  color: #ffc107;
+}
+
+
+
+.mui-textfield > input:focus,
+.mui-textfield > textarea:focus {
+  border-color: #ffc107;
+  border-width: 2px;
+}
+
+.mui-textfield > input:focus ~ label,
+.mui-textfield > textarea:focus ~ label {
+  color: #ffc107;
+}

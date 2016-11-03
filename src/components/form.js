@@ -22,7 +22,13 @@ export default class PlotSizeInputForm extends React.Component {
 	}
 
 	handleAreaChange(e) {
-		this.setState({area: parseInt(e.target.value)})
+
+		if (parseFloat(e.target.value).toString() != e.target.value) {
+			this.setState({area: e.target.value})
+			return
+		}
+
+		this.setState({area: parseFloat(e.target.value)})
 	}
 
 	handleRegionChange(e) {

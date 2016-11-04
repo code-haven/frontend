@@ -11,21 +11,26 @@ export default class PlanningParameters extends React.Component {
 		debugger
 		this.data = data.data;
 
+		this.state = this.data.globalData.spatial_planning;
+
 		const ground_coverage =  0.35 * this.data.globalData.area;
 		const effective_area = ground_coverage - 0.03 * ground_coverage;
 
-		this.state = {
-			ground_coverage: ground_coverage,
-			effective_area: effective_area,
-			approach_road: '',
-			height: '',
-			saleable_area: {
-				commercial: '',
-				residential: ''
-			},
-			commercial_area: '',
-			residential_area: '',
-		}
+		this.state.ground_coverage = ground_coverage;
+		this.state.effective_area = effective_area;
+		
+		// this.state = {
+		// 	ground_coverage: ground_coverage,
+		// 	effective_area: effective_area,
+		// 	approach_road: '',
+		// 	height: '',
+		// 	saleable_area: {
+		// 		commercial: '',
+		// 		residential: ''
+		// 	},
+		// 	commercial_area: '',
+		// 	residential_area: '',
+		// }
 
 		this.props.data.globalData.spatial_planning = this.state;
 	}
@@ -112,12 +117,12 @@ export default class PlanningParameters extends React.Component {
 							<td>N/A</td>
 						</tr>
 						<tr>
-                	        <td>Ground Coverage (35%) </td>
-							<td>{this.state.ground_coverage.toFixed(2)} acres</td>
+                	        <td>Ground Coverage</td>
+							<td> 35%</td>
 						</tr>
 						<tr>
-                	        <td>Civic Amenities (3%) </td>
-							<td>{ (0.03 * this.state.ground_coverage).toFixed(2)} acres</td>
+                	        <td>Civic Amenities</td>
+							<td>3%</td>
 						</tr>
 						<tr>
                 	        <td>Approach Road </td>
@@ -133,24 +138,144 @@ export default class PlanningParameters extends React.Component {
 							<td><table class="mui-table">
                                 <tbody>
                                     <tr>
-                                    <td>Standard FAR (1.33)</td>
-                                    <td>{(1.33 * this.state.ground_coverage).toFixed(2)} acres</td>
+                                    <td>Standard FAR</td>
+                                    <td>1.33</td>
                                     </tr>
                                     <tr>
-                                    <td>Maximum FAR (2.25) </td>
-                                    <td>{(2.25 * this.state.ground_coverage).toFixed(2)} acres</td>
+                                    <td>Maximum FAR </td>
+                                    <td>2.25</td>
                                     </tr>
                                 </tbody>
                             </table></td>
 						</tr>
+
 						<tr>
                 	        <td>Commercial Area: Residential Area</td>
 							<td>
 								<Input label="Commercial Area %"  value={this.state.commercial_area} onChange={this.handleCommercialAreaChange.bind(this)} hint=" <= 3%" required={true}/>
 								<Input label="Residential Area %"  value={this.state.residential_area} onChange={this.handleResidentialAreaChange.bind(this)} hint="" required={true}/></td>
 						</tr>
-						
-					</tbody>
+						<tr>
+                	        <td>Residential Area Planning Regulations</td>
+                	        <td>
+                	        	<table class="mui-table">
+                                <tbody>
+                                	<tr>
+                                	<td>Minimum Setback</td>
+                                	<td><table class="mui-table">
+		                                <tbody>
+		                                    <tr>
+		                                    <td>Front</td>
+		                                    <td>15m</td>
+		                                    </tr>
+		                                    <tr>
+		                                    <td>Side</td>
+		                                    <td>9m</td>
+		                                    </tr>
+		                                    <tr>
+		                                    <td>Back</td>
+		                                    <td>9m</td>
+		                                    </tr>
+		                                </tbody>
+		                            </table>
+		                            </td>
+		                            </tr>
+		                            <tr>
+		                            <td>Height</td>
+		                            	<td>N/A</td>
+		                            </tr>
+		                            <tr>
+		                            <td>Parking</td>
+		                            <td>
+		                            	<table class="mui-table">
+		                                <tbody>
+
+		                                    <tr>
+		                                    <td>1 ECU per 150 sq.m FAR for <b>Residential</b> projects with plot size greater than 500 sq.m
+		                                    	<br />
+		                                    	<ul>
+		                                    		<li>1 ECU = 23 sqm in Open Area</li>
+
+													<li>1 ECU = 28 sqm in Ground Level Parking</li>
+
+													<li>1 ECU = 32 sqm in Basement Parking</li>
+
+													<li>75% of total ECU is reserved for car, 20% for Two- wheelers, 5% for Bicycle</li>
+		                                    	</ul>
+		                                    </td>
+		     								</tr>
+				                            
+		                                </tbody>
+		                            </table>
+		                            </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            </td>
+							
+							
+						</tr>
+						<tr>
+                	        <td>Commercial Area Planning Regulations</td>
+                	        <td>
+                	        	<table class="mui-table">
+                                <tbody>
+                                	<tr>
+                                	<td>Minimum Setback</td>
+                                	<td><table class="mui-table">
+		                                <tbody>
+		                                    <tr>
+		                                    <td>Front</td>
+		                                    <td>15m</td>
+		                                    </tr>
+		                                    <tr>
+		                                    <td>Side</td>
+		                                    <td>9m</td>
+		                                    </tr>
+		                                    <tr>
+		                                    <td>Back</td>
+		                                    <td>9m</td>
+		                                    </tr>
+		                                </tbody>
+		                            </table>
+		                            </td>
+		                            </tr>
+		                            <tr>
+		                            <td>Height</td>
+		                            	<td>N/A</td>
+		                            </tr>
+		                            <tr>
+		                            <td>Parking</td>
+		                            <td>
+		                            	<table class="mui-table">
+		                                <tbody>
+		                                    <tr>
+		                                    <td>1 ECU per 50 sq.m FAR for <b>Commercial</b> projects.
+		                                    <br />	
+		                                    	<ul>
+		                                    		<li>1 ECU = 23 sqm in Open Area</li>
+
+													<li>1 ECU = 28 sqm in Ground Level Parking</li>
+
+													<li>1 ECU = 32 sqm in Basement Parking</li>
+
+													<li>75% of total ECU is reserved for car, 20% for Two- wheelers, 5% for Bicycle</li>
+		                                    	</ul>
+		                                    </td>
+		     								</tr>
+				                            
+		                                </tbody>
+		                            </table>
+		                            </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            </td>
+							
+							
+						</tr>
+
+					</tbody>	
 				</table>
 	          	<Button variant="raised">Generate Output</Button>
 	          	</Form>

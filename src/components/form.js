@@ -59,6 +59,10 @@ export default class PlotSizeInputForm extends React.Component {
 		// 	}
 		// })
 		this.props.globalData.spatial_planning = {}
+
+		if (this.props.globalData.area < 5) {
+			alert('Minimimum required area is 5 acres.');
+		}
 		this.props.nextPage();
 		
 		

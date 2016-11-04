@@ -36,7 +36,7 @@ export default class FinalResult extends React.Component {
                         </tr>
                         <tr>
                         <td>Ground Coverage </td>
-                        <td>{this.props.globalData.spatial_planning.ground_coverage.toFixed(2)} acres</td>
+                        <td>35%</td>
                         </tr>
                         <tr>
                         <td>Height</td>

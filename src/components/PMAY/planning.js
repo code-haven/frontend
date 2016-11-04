@@ -42,21 +42,23 @@ export default class PlanningParameters extends React.Component {
 			return;
 		}
 
-		this.setState({approach_road: parseInt(e.target.value)})
+		var approach_road = parseFloat(e.target.value);
+		
+		this.setState({approach_road: approach_road})
 
-		if (this.state.approach_road < 12)
+		if (approach_road < 12)
 		  this.setState({height: '15 m'})
 
-		if (this.state.approach_road >= 12 && this.state.approach_road < 18)
+		if (approach_road >= 12 && approach_road < 18)
 		  this.setState({height: '24 m'})
 
-		if (this.state.approach_road >= 18 && this.state.approach_road < 36)
+		if (approach_road >= 18 && approach_road < 36)
 		  this.setState({height: '36 m'})
 
-		if (this.state.approach_road >= 24 && this.state.approach_road < 45)
+		if (approach_road >= 24 && approach_road < 45)
 		  this.setState({height: '45 m'})	
 		
-		if (this.state.approach_road > 45)
+		if (approach_road > 45)
 		  this.setState({height: "As per Byelaws"})	
 		
 		

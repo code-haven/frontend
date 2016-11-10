@@ -17,8 +17,10 @@ export default class SpatialPlanner extends React.Component {
 	render() {
 		return (
             <div className="spatial">
-            <Button onClick={this.props.previousPage} variant="raised">Previous</Button>
-
+            <div className="topbar">
+                <Button onClick={this.props.previousPage} variant="raised">Previous</Button>
+                <span className="large_title">Optimising Large</span>
+            </div>
 			<Panel>
 			  <Tabs initialSelectedIndex={0} justified={true}> 
                 <Tab value="Mandatory Provisions" label="Mandatory Provisions">

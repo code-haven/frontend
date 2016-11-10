@@ -11,7 +11,6 @@ export default class FinalResult extends React.Component {
 		return (
             <div className="final">
                 <Button onClick={this.props.previousPage} variant="raised">Previous</Button>
-
                 <Panel>
                <ProgressBar step={3} step_name={"Output"} />
                <div className="final">

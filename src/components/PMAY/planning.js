@@ -121,7 +121,7 @@ export default class PlanningParameters extends React.Component {
 						</tr>
 						<tr>
                 	        <td>Civic Amenities</td>
-							<td>{(this.data.globalData.area * 0.03).toFixed(2)} sq.ft</td>
+							<td>3% ({(this.data.globalData.area * 0.03).toFixed(2)} sq.ft) </td>
 						</tr>
 						<tr>
                 	        <td>Approach Road </td>

@@ -23,11 +23,11 @@ export default class FinalResult extends React.Component {
                                 <tbody>
                                     <tr>
                                     <td>Commercial Area</td>
-                                    <td>{this.props.globalData.spatial_planning.saleable_area.commercial.toFixed(2)} acres</td>
+                                    <td>{this.props.globalData.spatial_planning.saleable_area.commercial.toFixed(2)}   sq. ft</td>
                                     </tr>
                                     <tr>
                                     <td>Residential Area</td>
-                                    <td>{this.props.globalData.spatial_planning.saleable_area.residential.toFixed(2)} acres</td>
+                                    <td>{this.props.globalData.spatial_planning.saleable_area.residential.toFixed(2)}   sq. ft</td>
                                     </tr>
                                     
                                 </tbody>

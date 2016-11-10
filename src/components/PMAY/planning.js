@@ -13,10 +13,8 @@ export default class PlanningParameters extends React.Component {
 
 		this.state = this.data.globalData.spatial_planning;
 
-		const ground_coverage =  0.35 * this.data.globalData.area;
-		const effective_area = ground_coverage - 0.03 * ground_coverage;
+		const effective_area = this.data.globalData.area - 0.03 * this.data.globalData.area;
 
-		this.state.ground_coverage = ground_coverage;
 		this.state.effective_area = effective_area;
 		
 		// this.state = {
@@ -66,13 +64,12 @@ export default class PlanningParameters extends React.Component {
 
 	finalCalculation(e) {
 		e.preventDefault();
-		console.log(this.props);
 
-		this.state.FAR = 2.25
+		this.state.FAR = 1.33;
 		const commercial = this.state.commercial_area/100 * (this.state.effective_area * this.state.FAR); 
 		this.state.saleable_area = {
 			commercial: commercial,
-			residential: (this.state.effective_area * this.state.FAR) - commercial
+			residential: ((this.state.effective_area * this.state.FAR) - commercial)
 		}
 		this.props.data.globalData.spatial_planning = this.state;
 		this.props.data.nextPage();
@@ -124,7 +121,7 @@ export default class PlanningParameters extends React.Component {
 						</tr>
 						<tr>
                 	        <td>Civic Amenities</td>
-							<td>3%</td>
+							<td>{(this.data.globalData.area * 0.03).toFixed(2)} sq.ft</td>
 						</tr>
 						<tr>
                 	        <td>Approach Road </td>
@@ -193,7 +190,7 @@ export default class PlanningParameters extends React.Component {
 		                                <tbody>
 
 		                                    <tr>
-		                                    <td>1 ECU per 150 sq.m FAR for <b>Residential</b> projects with plot size greater than 500 sq.m
+		                                    <td className="listing">1 ECU per 150 sq.m FAR for <b>Residential</b> projects with plot size greater than 500 sq.m
 		                                    	<br />
 		                                    	<ul>
 		                                    		<li>1 ECU = 23 sqm in Open Area</li>
@@ -252,7 +249,7 @@ export default class PlanningParameters extends React.Component {
 		                            	<table class="mui-table">
 		                                <tbody>
 		                                    <tr>
-		                                    <td>1 ECU per 50 sq.m FAR for <b>Commercial</b> projects.
+		                                    <td className="listing">1 ECU per 50 sq.m FAR for <b>Commercial</b> projects.
 		                                    <br />	
 		                                    	<ul>
 		                                    		<li>1 ECU = 23 sqm in Open Area</li>

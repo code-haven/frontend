@@ -132,14 +132,18 @@ p {
 }
 
 td, th {
-    padding: 15px;
+    padding: 14px;
 }
 
-.spatial, .final {
+.spatial {
     width: 800px;
     margin: 0 auto;
 }
 
+.final {
+    width: 675px;
+    margin: 0 auto;
+}
 .planning, .mandatory, .final, .incentive {
     padding: 25px;
 }
@@ -171,4 +175,21 @@ td, th {
 .mui-textfield > input:focus ~ label,
 .mui-textfield > textarea:focus ~ label {
   color: #ffc107;
+}
+
+tbody > tr > td:nth-child(1) {
+    background: #ffc107;
+}
+
+td {
+    border: 1px solid #0e0e0e;
+}
+
+td.listing > ul {
+    padding-left: 25px;
+    padding-top: 10px;
+}
+
+button  {
+    margin-top: 10px !important;
 }

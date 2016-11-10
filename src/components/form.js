@@ -1,4 +1,4 @@
-import React from 'react';
+	import React from 'react';
 import ProgressBar from './progress'
 import Form from 'muicss/lib/react/form';
 import Input from 'muicss/lib/react/input';
@@ -44,26 +44,14 @@ export default class PlotSizeInputForm extends React.Component {
 
 
 		this.props.globalData.area = this.state.area;
-
-		const params = {
-			'length': this.props.globalData.length,
-			'area': this.props.globalData.area,
-			'breadth': this.props.globalData.breadth
-		}
-		// $.ajax({
-		// 	url: 'http://localhost:8000/api/spatial_planning', 
-		// 	data: params,
-		// 	success: (response) => {
-		// 		this.props.globalData.spatial_planning = response
-		// 		this.props.nextPage();
-		// 	}
-		// })
 		this.props.globalData.spatial_planning = {}
 
 		if (this.props.globalData.area < 5) {
 			alert('Minimimum required area is 5 acres.');
 			return;
 		}
+
+		this.props.globalData.area = 43560 * this.props.globalData.area;
 		this.props.nextPage();
 		
 		
@@ -72,7 +60,7 @@ export default class PlotSizeInputForm extends React.Component {
 	render() {
 		return (
 			<Panel id="formPanel">
-			  <ProgressBar step={1} step_name={"Inputs"} />
+			  <ProgressBar step={1} step_name={"WELCOME TO MAXIMISING LARGE"} />
 			  <Form className="inputForm" onSubmit={this.calculateArea.bind(this)}>
 		          <Select label="Select a State" value={this.state.region} required={true} onChange={this.handleRegionChange.bind(this)}>
 					<Option value="Andaman and Nicobar Islands" defaultValue="Karnataka" label="Andaman and Nicobar Islands"/>
@@ -116,7 +104,7 @@ export default class PlotSizeInputForm extends React.Component {
 				  	<Option value="PMAY" label="PMAY"/>
 					<Option value="State" label="State"/>
 				  </Select>
-	          	<Button variant="raised">Next</Button>
+	          	<Button variant="raised">Optimise</Button>
 	        </Form>
 	      </Panel>  
 		)

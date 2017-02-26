@@ -12,52 +12,39 @@ export default class PlanningParameters extends React.Component {
 		this.data = data.data;
 
 		this.state = this.data.globalData.spatial_planning;
-
-		const effective_area = this.data.globalData.area - 0.03 * this.data.globalData.area;
-
-		this.state.effective_area = effective_area;
-		
-		// this.state = {
-		// 	ground_coverage: ground_coverage,
-		// 	effective_area: effective_area,
-		// 	approach_road: '',
-		// 	height: '',
-		// 	saleable_area: {
-		// 		commercial: '',
-		// 		residential: ''
-		// 	},
-		// 	commercial_area: '',
-		// 	residential_area: '',
-		// }
-
+		this.state.effective_area = this.data.globalData.area;
+		this.state.ground_coverage = 0.0;
+		this.state.civic_amenities = 0.0;
+		this.state.available_land_area = this.state.effective_area;
 		this.props.data.globalData.spatial_planning = this.state;
+		this.handleGroundCoverageChange.bind(this);
 	}
 
 	handleApproachRoadChange(e) {
 
-		if (!parseInt(e.target.value)) {
-			this.setState({approach_road: e.target.value});
+		this.setState({approach_road: e.target.value});
+		if (!parseFloat(e.target.value)) {
 			return;
 		}
 
 		var approach_road = parseFloat(e.target.value);
 		
-		this.setState({approach_road: approach_road})
-
-		if (approach_road < 12)
+		if (approach_road < 9)
+		  this.setState({height: 'Approach Road too small for group housing'})
+		if (approach_road > 9 && approach_road <= 12)
 		  this.setState({height: '15 m'})
 
-		if (approach_road >= 12 && approach_road < 18)
+		if (approach_road > 12 && approach_road <= 18)
 		  this.setState({height: '24 m'})
 
-		if (approach_road >= 18 && approach_road < 36)
+		if (approach_road > 18 && approach_road <= 36)
 		  this.setState({height: '36 m'})
 
-		if (approach_road >= 24 && approach_road < 45)
+		if (approach_road > 24 && approach_road <= 45)
 		  this.setState({height: '45 m'})	
 		
 		if (approach_road > 45)
-		  this.setState({height: "As per Byelaws"})	
+		  this.setState({height: "Too high a value for Affordable Housing"})	
 		
 		
 	}
@@ -92,6 +79,37 @@ export default class PlanningParameters extends React.Component {
 
 	}
 
+	handleCivicAmenitiesChange(e) {
+		let ca = parseFloat(e.target.value);
+
+		if (ca > 100)
+			ca = 100;
+		else if (ca.toString() != e.target.value) {
+			this.setState({civic_amenities_perc: e.target.value})
+			return
+		}
+		this.setState({
+			'civic_amenities_perc': ca,
+			'civic_amenities': (ca/100) * this.state.effective_area,
+			'available_land_area': this.state.effective_area - (ca/100) * this.state.effective_area
+		});
+	}
+
+	handleGroundCoverageChange(e) {
+		let gc = parseFloat(e.target.value);
+
+		if (gc > 100)
+			gc = 100;
+		else if (gc.toString() != e.target.value) {
+			this.setState({ground_coverage_perc: e.target.value})
+			return
+		}
+		this.setState({
+			'ground_coverage_perc': gc,
+			'ground_coverage': (gc/100) * this.state.available_land_area
+		});
+	}
+
 	handleResidentialAreaChange(e) {
 	var r = parseFloat(e.target.value);
 
@@ -111,25 +129,39 @@ export default class PlanningParameters extends React.Component {
             	<Form onSubmit={this.finalCalculation.bind(this)}>
                  <table class="mui-table">
                     <tbody>
-                        <tr>
-                	        <td>Mandatory Provisions</td>
-							<td>N/A</td>
+						<tr>
+							<td className="constant">Land Area</td>
+							<td>{(this.state.effective_area).toFixed(2)} sq.ft</td>
 						</tr>
 						<tr>
-                	        <td>Ground Coverage</td>
-							<td> 35%</td>
+                	        <td>Input Civic Amenities</td>
+							<td><Input label=""  value={this.state.civic_amenities_perc} onChange={this.handleCivicAmenitiesChange.bind(this)} label=" Enter % of Civic Amenities acc to Byelaws" required={true}/></td>
 						</tr>
 						<tr>
-                	        <td>Civic Amenities</td>
-							<td>3% ({(this.data.globalData.area * 0.03).toFixed(2)} sq.ft) </td>
+							<td className="constant">Civic Amenities</td>
+							<td>{(this.state.civic_amenities).toFixed(2)} sq.ft</td>
 						</tr>
+						<tr>
+							<td className="constant">Available Land Area</td>
+							<td>{(this.state.available_land_area).toFixed(2)} sq.ft</td>
+						</tr>
+						<tr>
+                	        <td>Input Ground Coverage</td>
+							<td>
+								<Input label=""  value={this.state.ground_coverage_perc} onChange={this.handleGroundCoverageChange.bind(this)} label="Enter % of Ground Coverage acc to Byelaws" required={true}/></td>
+						</tr>
+						<tr>
+							<td className="constant">Ground Coverage</td>
+							<td>{(this.state.ground_coverage).toFixed(2)} sq.ft</td>
+						</tr>
+						
 						<tr>
                 	        <td>Approach Road </td>
 							<td>
-								<Input label="Input the approach Road"  value={this.state.approach_road} onChange={this.handleApproachRoadChange.bind(this)} hint="Input the approach Road in meters" required={true}/></td>
+								<Input value={this.state.approach_road} onChange={this.handleApproachRoadChange.bind(this)} label="Input the approach Road in meters" required={true}/></td>
 						</tr>
 						<tr>
-                	        <td>Height </td>
+                	        <td className="constant">Height </td>
 							<td>{this.state.height}</td>
 						</tr>
 						<tr>

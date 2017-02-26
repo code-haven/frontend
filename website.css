@@ -203,3 +203,7 @@ button  {
 .topbar {
     margin-bottom: 20px;
 }
+
+.constant {
+    background: #d3d3d3 !important;
+}

@@ -15,8 +15,15 @@ export default class PlanningParameters extends React.Component {
 		this.state.effective_area = this.data.globalData.area;
 		this.state.ground_coverage = 0.0;
 		this.state.civic_amenities = 0.0;
+		this.state.max_floors = 6;
+		this.state.design_floors = 0;
+		this.state.available_far = 2;
+		this.state.new_bua = 0;
 		this.state.available_land_area = this.state.effective_area;
+		this.state.bua = parseFloat(this.state.available_land_area) * this.state.available_far;
+		this.state.far_status = 'Need not buy extra FAR - add floors'
 		this.props.data.globalData.spatial_planning = this.state;
+
 		this.handleGroundCoverageChange.bind(this);
 	}
 
@@ -106,7 +113,7 @@ export default class PlanningParameters extends React.Component {
 		}
 		this.setState({
 			'ground_coverage_perc': gc,
-			'ground_coverage': (gc/100) * this.state.available_land_area
+			'ground_coverage': (gc/100) * this.state.effective_area
 		});
 	}
 
@@ -123,6 +130,21 @@ export default class PlanningParameters extends React.Component {
 	  this.setState({commercial_area: 100 - r})
 	}
 
+	handleDesignFloorChange(e) {
+		if (!e.target.value)
+			this.setState({design_floors: 0})
+		else{
+			this.setState({design_floors: parseInt(e.target.value)});
+			this.setState({new_bua: parseInt(e.target.value) * this.state.ground_coverage})
+
+			console.log(this.state.bua)
+			if ((parseInt(e.target.value) * this.state.ground_coverage) < this.state.bua)
+				this.state.far_status = 'Need not buy extra FAR - add floors' 
+			else
+				this.state.far_status = 'Should buy extra FAR: Check for Extra BUA - Need not buy if No additional floors need to be added'
+		}
+	}
+
 	render() {
 		return (
             <div className="planning">
@@ -135,7 +157,7 @@ export default class PlanningParameters extends React.Component {
 						</tr>
 						<tr>
                 	        <td>Input Civic Amenities</td>
-							<td><Input label=""  value={this.state.civic_amenities_perc} onChange={this.handleCivicAmenitiesChange.bind(this)} label=" Enter % of Civic Amenities acc to Byelaws" required={true}/></td>
+							<td><Input label="" value={this.state.civic_amenities_perc} onChange={this.handleCivicAmenitiesChange.bind(this)} label=" Enter % of Civic Amenities acc to Byelaws" required={true}/></td>
 						</tr>
 						<tr>
 							<td className="constant">Civic Amenities</td>
@@ -161,25 +183,34 @@ export default class PlanningParameters extends React.Component {
 								<Input value={this.state.approach_road} onChange={this.handleApproachRoadChange.bind(this)} label="Input the approach Road in meters" required={true}/></td>
 						</tr>
 						<tr>
-                	        <td className="constant">Height </td>
+                	        <td className="constant">Allowable Height</td>
 							<td>{this.state.height}</td>
 						</tr>
 						<tr>
-                	        <td>FAR </td>
-							<td><table class="mui-table">
-                                <tbody>
-                                    <tr>
-                                    <td>Standard FAR</td>
-                                    <td>1.33</td>
-                                    </tr>
-                                    <tr>
-                                    <td>Maximum FAR </td>
-                                    <td>2.25</td>
-                                    </tr>
-                                </tbody>
-                            </table></td>
+							<td className="constant">Max number of floors</td>
+							<td>{this.state.max_floors}</td>
 						</tr>
-
+						<tr>
+                	        <td>Input no. of floors</td>
+							<td>
+								<Input value={this.state.design_floors} onChange={this.handleDesignFloorChange.bind(this)} label="Enter no. of floors as per your design" required={true}/></td>
+						</tr>
+						<tr>
+							<td className="constant">Available FAR</td>
+							<td>{this.state.available_far}</td>
+						</tr>
+						<tr>
+							<td className="constant">Available Built Up Area (BUA)</td>
+							<td>{this.state.bua} sq.ft</td>
+						</tr>
+						<tr>
+							<td className="constant">New BUA with the given floors</td>
+							<td>{this.state.new_bua} sq.ft</td>
+						</tr>
+						<tr>
+							<td className="constant">FAR</td>
+							<td>{this.state.far_status}</td>
+						</tr>
 						<tr>
                 	        <td>Commercial Area: Residential Area</td>
 							<td>

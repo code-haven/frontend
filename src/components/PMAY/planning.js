@@ -15,7 +15,7 @@ export default class PlanningParameters extends React.Component {
 		this.state.effective_area = this.data.globalData.area;
 		this.state.ground_coverage = 0.0;
 		this.state.civic_amenities = 0.0;
-		this.state.max_floors = 6;
+		this.state.max_floors = 5;
 		this.state.design_floors = 0;
 		this.state.available_far = 2;
 		this.state.new_bua = 0;

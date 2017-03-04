@@ -145,7 +145,7 @@ td, th {
     width: 675px;
     margin: 0 auto;
 }
-.planning, .mandatory, .final, .incentive {
+.planning, .mandatory, .incentive {
     padding: 25px;
 }
 
@@ -215,4 +215,8 @@ button  {
 
 table {
     width: 100%;
+}
+
+.cntrn {
+    padding: 40px;
 }

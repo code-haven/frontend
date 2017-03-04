@@ -31,7 +31,7 @@ export default class PlanningParameters extends React.Component {
 		this.state.available_bua_with_additional_far = 0;
 		this.state.betterment_levy_for_paid = 0;
 		this.state.total_amount_pair_for_far = 0;
-		this.props.data.globalData.spatial_planning = this.state;
+		this.props.data.globalData.results = this.state;
 
 		this.handleGroundCoverageChange.bind(this);
 	}
@@ -67,14 +67,9 @@ export default class PlanningParameters extends React.Component {
 
 	finalCalculation(e) {
 		e.preventDefault();
-
+		debugger;
 		this.state.FAR = 1.33;
-		const commercial = this.state.commercial_area/100 * (this.state.effective_area * this.state.FAR); 
-		this.state.saleable_area = {
-			commercial: commercial,
-			residential: ((this.state.effective_area * this.state.FAR) - commercial)
-		}
-		this.props.data.globalData.spatial_planning = this.state;
+		this.props.data.globalData.results = this.state;
 		this.props.data.nextPage();
 	}
 
@@ -334,7 +329,7 @@ export default class PlanningParameters extends React.Component {
 						
 					</tbody>	
 				</table>
-	          	<Button variant="raised">Generate Output</Button>
+	          	<Button variant="raised">Calculate Cost of Project</Button>
 	          	</Form>
             </div>
 		)

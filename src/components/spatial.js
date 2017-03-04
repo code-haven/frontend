@@ -23,12 +23,12 @@ export default class SpatialPlanner extends React.Component {
             </div>
 			<Panel>
 			  <Tabs initialSelectedIndex={0} justified={true}> 
-                <Tab value="Mandatory Provisions" label="Mandatory Provisions">
-                    <MandatoryProvisions data={this.data}/>              
-                 </Tab>
                 <Tab value="Planning Parameters" label="Planning Parameters">
                     <PlanningParameters data={this.data}/>
                 </Tab>
+                <Tab value="Mandatory Provisions" label="Mandatory Provisions">
+                    <MandatoryProvisions data={this.data}/>              
+                 </Tab>
                  <Tab value="Incentives" label="Incentives">
                     <Incentives data={this.data} />              
                  </Tab>

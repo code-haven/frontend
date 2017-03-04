@@ -21,7 +21,16 @@ export default class PlanningParameters extends React.Component {
 		this.state.new_bua = 0;
 		this.state.available_land_area = this.state.effective_area;
 		this.state.bua = parseFloat(this.state.available_land_area) * this.state.available_far;
-		this.state.far_status = 'Need not buy extra FAR - add floors'
+		this.state.far_status = 'Need not buy extra FAR - add floors';
+		this.state.maximum_far_utilization_status = '';
+		this.state.maximum_far_available = 0;	
+		this.state.floor_diff = 0;
+		this.state.additional_paid_far = 0;
+		this.state.bua_per_floor = 0;
+		this.state.total_far = 0;
+		this.state.available_bua_with_additional_far = 0;
+		this.state.betterment_levy_for_paid = 0;
+		this.state.total_amount_pair_for_far = 0;
 		this.props.data.globalData.spatial_planning = this.state;
 
 		this.handleGroundCoverageChange.bind(this);
@@ -95,10 +104,13 @@ export default class PlanningParameters extends React.Component {
 			this.setState({civic_amenities_perc: e.target.value})
 			return
 		}
+
+		var available_land_area = this.state.effective_area - (ca/100) * this.state.effective_area;
 		this.setState({
 			'civic_amenities_perc': ca,
 			'civic_amenities': (ca/100) * this.state.effective_area,
-			'available_land_area': this.state.effective_area - (ca/100) * this.state.effective_area
+			'available_land_area': available_land_area,
+			'bua': available_land_area * this.state.available_far
 		});
 	}
 
@@ -137,15 +149,87 @@ export default class PlanningParameters extends React.Component {
 			this.setState({design_floors: parseInt(e.target.value)});
 			this.setState({new_bua: parseInt(e.target.value) * this.state.ground_coverage})
 
-			console.log(this.state.bua)
-			if ((parseInt(e.target.value) * this.state.ground_coverage) < this.state.bua)
+			var design_floors = parseInt(e.target.value);
+
+			if (design_floors * this.state.ground_coverage < this.state.bua)
 				this.state.far_status = 'Need not buy extra FAR - add floors' 
 			else
 				this.state.far_status = 'Should buy extra FAR: Check for Extra BUA - Need not buy if No additional floors need to be added'
+			
+			var break_even_floors = 0;
+			if (design_floors <= this.state.max_floors)
+				break_even_floors = Math.ceil(((parseInt(e.target.value) * this.state.ground_coverage) - this.state.bua)/this.state.ground_coverage);
+			else
+				break_even_floors = "Floors exceed the limit"
+
+			this.setState({'break_even_floors': break_even_floors});
+
+
+			var bua_per_floor = (design_floors * this.state.ground_coverage) / design_floors;
+			this.setState({'bua_per_floor': bua_per_floor});
+			
+			var floor_diff = this.state.max_floors - design_floors;
+			if (floor_diff > 0)
+				this.setState({maximum_far_available: (this.state.ground_coverage / this.state.available_land_area) * floor_diff})
+			else
+				this.setState({maximum_far_available: 0})
+
+			if (bua_per_floor > this.state.ground_coverage)
+				this.setState({maximum_far_utilization_status: "Need not buy additional FAR as BUA/floor exceeds Permissible Gr. Co. - Increase the no. of floors"})
+			else
+				this.setState({maximum_far_utilization_status: `Can buy extra FAR: Check for max no. of floors - No of extra floors available to reach the limit is ${this.state.max_floors - design_floors}`});
+			
+			var additional_paid_far = 0;
+			if (typeof(break_even_floors) == "Floors exceed the limit!")
+				additional_paid_far = -1
+			else
+				additional_paid_far = (break_even_floors * this.state.ground_coverage) / this.state.available_land_area;
+
+			var total_far = 0;
+			if (typeof(additional_paid_far) == -1)
+				total_far = -1
+			else
+				total_far =this.state.available_far + additional_paid_far;
+
+			var available_bua_with_additional_far = 0;
+			if (typeof(total_far) != -1)
+				available_bua_with_additional_far = total_far * this.state.available_land_area;
+			else
+				available_bua_with_additional_far = -1;
+
+			var betterment_levy_for_paid = 0;
+			if (typeof(total_far) != 'string'){
+				if (total_far < 2)
+					betterment_levy_for_paid = 100;
+				else if (total_far >= 2 && total_far < 2.25)
+					betterment_levy_for_paid = 150;
+				else if (total_far >= 2.25 && total_far < 2.75)
+					betterment_levy_for_paid = 300;
+				else
+					betterment_levy_for_paid = 400;
+			}
+			else 
+				betterment_levy_for_paid = "Floors exceed the limit, cannot compute."
+
+			var total_amount_pair_for_far = 0;
+			if (typeof(available_bua_with_additional_far) != "string" && typeof(betterment_levy_for_paid) != "string")
+				total_amount_pair_for_far = ((available_bua_with_additional_far - this.state.bua) * betterment_levy_for_paid) / 10000000;
+			else
+				total_amount_pair_for_far = 'Invalid'
+
+			this.setState({total_far: total_far});
+			this.setState({additional_paid_far: additional_paid_far})
+			this.setState({betterment_levy_for_paid: betterment_levy_for_paid})
+			this.setState({available_bua_with_additional_far: available_bua_with_additional_far})
+			this.setState({total_amount_pair_for_far: total_amount_pair_for_far})
 		}
 	}
 
 	render() {
+		var show_extra_far = this.state.new_bua < this.state.bua? true: false;
+		var extra_far_style = {}
+		if (show_extra_far)
+			extra_far_style = {display: 'none'}
 		return (
             <div className="planning">
             	<Form onSubmit={this.finalCalculation.bind(this)}>
@@ -211,132 +295,43 @@ export default class PlanningParameters extends React.Component {
 							<td className="constant">FAR</td>
 							<td>{this.state.far_status}</td>
 						</tr>
-						<tr>
-                	        <td>Commercial Area: Residential Area</td>
-							<td>
-								<Input label="Commercial Area %"  value={this.state.commercial_area} onChange={this.handleCommercialAreaChange.bind(this)} hint=" <= 3%" required={true}/>
-								<Input label="Residential Area %"  value={this.state.residential_area} onChange={this.handleResidentialAreaChange.bind(this)} hint="" required={true}/></td>
+						<tr style={extra_far_style}>
+							<td className="constant">No. of floors to be added after breaking even with Base FAR</td>
+							<td>{this.state.break_even_floors}</td>
 						</tr>
-						<tr>
-                	        <td>Residential Area Planning Regulations</td>
-                	        <td>
-                	        	<table class="mui-table">
-                                <tbody>
-                                	<tr>
-                                	<td>Minimum Setback</td>
-                                	<td><table class="mui-table">
-		                                <tbody>
-		                                    <tr>
-		                                    <td>Front</td>
-		                                    <td>15m</td>
-		                                    </tr>
-		                                    <tr>
-		                                    <td>Side</td>
-		                                    <td>9m</td>
-		                                    </tr>
-		                                    <tr>
-		                                    <td>Back</td>
-		                                    <td>9m</td>
-		                                    </tr>
-		                                </tbody>
-		                            </table>
-		                            </td>
-		                            </tr>
-		                            <tr>
-		                            <td>Height</td>
-		                            	<td>N/A</td>
-		                            </tr>
-		                            <tr>
-		                            <td>Parking</td>
-		                            <td>
-		                            	<table class="mui-table">
-		                                <tbody>
-
-		                                    <tr>
-		                                    <td className="listing">1 ECU per 150 sq.m FAR for <b>Residential</b> projects with plot size greater than 500 sq.m
-		                                    	<br />
-		                                    	<ul>
-		                                    		<li>1 ECU = 23 sqm in Open Area</li>
-
-													<li>1 ECU = 28 sqm in Ground Level Parking</li>
-
-													<li>1 ECU = 32 sqm in Basement Parking</li>
-
-													<li>75% of total ECU is reserved for car, 20% for Two- wheelers, 5% for Bicycle</li>
-		                                    	</ul>
-		                                    </td>
-		     								</tr>
-				                            
-		                                </tbody>
-		                            </table>
-		                            </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            </td>
-							
-							
+						<tr style={extra_far_style}>
+							<td className="constant">BUA/Floor</td>
+							<td>{this.state.bua_per_floor.toFixed(2)} sq.ft</td>
 						</tr>
-						<tr>
-                	        <td>Commercial Area Planning Regulations</td>
-                	        <td>
-                	        	<table class="mui-table">
-                                <tbody>
-                                	<tr>
-                                	<td>Minimum Setback</td>
-                                	<td><table class="mui-table">
-		                                <tbody>
-		                                    <tr>
-		                                    <td>Front</td>
-		                                    <td>15m</td>
-		                                    </tr>
-		                                    <tr>
-		                                    <td>Side</td>
-		                                    <td>9m</td>
-		                                    </tr>
-		                                    <tr>
-		                                    <td>Back</td>
-		                                    <td>9m</td>
-		                                    </tr>
-		                                </tbody>
-		                            </table>
-		                            </td>
-		                            </tr>
-		                            <tr>
-		                            <td>Height</td>
-		                            	<td>N/A</td>
-		                            </tr>
-		                            <tr>
-		                            <td>Parking</td>
-		                            <td>
-		                            	<table class="mui-table">
-		                                <tbody>
-		                                    <tr>
-		                                    <td className="listing">1 ECU per 50 sq.m FAR for <b>Commercial</b> projects.
-		                                    <br />	
-		                                    	<ul>
-		                                    		<li>1 ECU = 23 sqm in Open Area</li>
-
-													<li>1 ECU = 28 sqm in Ground Level Parking</li>
-
-													<li>1 ECU = 32 sqm in Basement Parking</li>
-
-													<li>75% of total ECU is reserved for car, 20% for Two- wheelers, 5% for Bicycle</li>
-		                                    	</ul>
-		                                    </td>
-		     								</tr>
-				                            
-		                                </tbody>
-		                            </table>
-		                            </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            </td>
-							
-							
+						<tr style={extra_far_style}>
+							<td className="constant">Check for Maximum FAR utilization</td>
+							<td>{this.state.maximum_far_utilization_status}</td>
 						</tr>
-
+						<tr style={extra_far_style}>
+							<td className="constant">Max. FAR available (incremental to the current value)</td>
+							<td>{this.state.maximum_far_available}</td>
+						</tr>
+						<tr style={extra_far_style}>
+							<td className="constant">Additional Paid FAR</td>
+							<td>{this.state.additional_paid_far.toFixed(6)}</td>
+						</tr>
+						<tr style={extra_far_style}>
+							<td className="constant">Total FAR</td>
+							<td>{this.state.total_far.toFixed(6)}</td>
+						</tr>
+						<tr style={extra_far_style}>
+							<td className="constant">Available BUA with additional Paid FAR</td>
+							<td>{this.state.available_bua_with_additional_far.toFixed(4)} sq.ft </td>
+						</tr>
+						<tr style={extra_far_style}>
+							<td className="constant">Betterment levy for Paid FAR</td>
+							<td>{this.state.betterment_levy_for_paid} Rs / sq.ft </td>
+						</tr>
+						<tr style={extra_far_style}>
+							<td className="constant">Total amount paid for Extra FAR</td>
+							<td>{this.state.total_amount_pair_for_far.toFixed(4)} Cr.</td>
+						</tr>
+						
 					</tbody>	
 				</table>
 	          	<Button variant="raised">Generate Output</Button>

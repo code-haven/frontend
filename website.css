@@ -212,3 +212,7 @@ button  {
 .constant {
     background: #fff !important;
 }
+
+table {
+    width: 100%;
+}
